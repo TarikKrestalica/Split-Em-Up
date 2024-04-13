@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EmptyManager : MonoBehaviour
 {
-    [Range(0, 20f)]
+    [Range(-20f, 20f)]
     [SerializeField] private float xBound;
 
     // Update is called once per frame

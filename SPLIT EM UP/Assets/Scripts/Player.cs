@@ -19,17 +19,18 @@ public class Player : MonoBehaviour
     private float vertInput;
     [SerializeField] private float rotationSpeed;
 
-    [Header("Jumping")]
-    [Range(1, 10)]
-    [SerializeField] private float jumpStrength;
-    [Range(0.1f, .9f)]
-    [SerializeField] private float jumpMovementDecay;
-
     private Vector3 startingPosition;
 
     // Dead State
     private bool isDead = false;
     private bool isAtGoal = false;
+
+    float currentScore = 0f;
+    float currentHealth = 100f;
+
+    float enemyHitDelay = 3.1f;
+    float curEnemyHitDelay = 0f;
+
     #endregion
 
     // Start is called before the first frame update
@@ -48,7 +49,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         RunMovement();
-        RunJump();
     }
 
     void RunMovement()
@@ -56,12 +56,6 @@ public class Player : MonoBehaviour
         // Movement Logic
         horInput = Input.GetAxis("Horizontal");
         vertInput = Input.GetAxis("Vertical");
-
-        if (!IsGrounded())
-        {
-            horInput /= jumpMovementDecay;
-            vertInput /= jumpMovementDecay;
-        }
 
         // Fixing player rotation: https://youtu.be/v6Kh748AwJU?si=-k-4hQngw7fizIyU
         Vector3 myVel = new Vector3(horInput, 0, vertInput);
@@ -76,18 +70,6 @@ public class Player : MonoBehaviour
         {
             Quaternion lookRotation = Quaternion.LookRotation(myVel, Vector3.up);
             this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
-        }
-    }
-
-    void RunJump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!IsGrounded())
-            {
-                return;
-            }
-            rb.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
         }
     }
 
@@ -143,6 +125,29 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            if(curEnemyHitDelay <= 0)
+            {
+                currentHealth -= 10;
+                GameManager.healthBar.SetHealth(currentHealth);
+                curEnemyHitDelay = enemyHitDelay;
+            }
+
+            curEnemyHitDelay -= Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.B))
+            {
+                Destroy(collision.gameObject);
+                currentScore += 10;
+                GameManager.scoreManager.SetScore(currentScore);
+                curEnemyHitDelay = 0f;
+            }
+        }
+    }
+
     // Death Logic
     public bool IsDead()
     {
@@ -168,5 +173,10 @@ public class Player : MonoBehaviour
     public Vector3 GetStartingPosition()
     {
         return startingPosition;
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
     }
 }
