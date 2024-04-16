@@ -28,10 +28,11 @@ public class Player : MonoBehaviour
     float currentScore = 0f;
     float currentHealth = 100f;
 
+    [Header("Fighting Area Logic")]
     float enemyHitDelay = 3.1f;
     float curEnemyHitDelay = 0f;
-
     private bool inFightingZone = false;
+    GameObject previousTarget;
 
     #endregion
 
@@ -123,7 +124,16 @@ public class Player : MonoBehaviour
     {
         if(other.gameObject.tag == "CameraStop")
         {
+            if (previousTarget)
+            {
+                if (previousTarget == other.gameObject)
+                    return;
+            }
+
+            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
+            target.SetActive(true);
             inFightingZone = true;
+            previousTarget = target;
         }
     }
 
@@ -131,6 +141,8 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "CameraStop")
         {
+            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
+            target.SetActive(false);
             inFightingZone = false;
         }
     }
