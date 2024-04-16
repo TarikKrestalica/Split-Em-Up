@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
     float enemyHitDelay = 3.1f;
     float curEnemyHitDelay = 0f;
 
+    private bool inFightingZone = false;
+
     #endregion
 
     // Start is called before the first frame update
@@ -119,9 +121,17 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "KillFloor")
+        if(other.gameObject.tag == "CameraStop")
         {
-            SetDeadState(true);
+            inFightingZone = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "CameraStop")
+        {
+            inFightingZone = false;
         }
     }
 
@@ -178,5 +188,10 @@ public class Player : MonoBehaviour
     public float GetCurrentHealth()
     {
         return currentHealth;
+    }
+
+    public bool AtFightingZone()
+    {
+        return inFightingZone;
     }
 }
