@@ -54,6 +54,16 @@ public class Player : MonoBehaviour
         RunMovement();
     }
 
+    public void RunAttackLogic(GameObject target)
+    {
+        if (Input.GetKey(KeyCode.B))
+        {
+            Destroy(target);
+            currentScore += 10;
+            GameManager.scoreManager.SetScore(currentScore);
+            curEnemyHitDelay = 0f;
+        }
+    }
     void RunMovement()
     {
         // Movement Logic
@@ -147,10 +157,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Enemy hitting logic!
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Enemy")
         {
+            Enemy component = collision.gameObject.GetComponent<Enemy>();
+            if (!component)
+            {
+                Debug.Log("Component can not be found!");
+                return;
+            }
+
             if(curEnemyHitDelay <= 0)
             {
                 currentHealth -= 10;
@@ -158,15 +176,7 @@ public class Player : MonoBehaviour
                 curEnemyHitDelay = enemyHitDelay;
             }
 
-            curEnemyHitDelay -= Time.deltaTime;
-
-            if (Input.GetKey(KeyCode.B))
-            {
-                Destroy(collision.gameObject);
-                currentScore += 10;
-                GameManager.scoreManager.SetScore(currentScore);
-                curEnemyHitDelay = 0f;
-            }
+            curEnemyHitDelay -= Time.deltaTime;        
         }
     }
 
