@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum PlayerState
+{
+    Default,
+    HitByEnemy,
+    HitEnemy
+};
+
 public class Player : MonoBehaviour
 {
     #region Variables
@@ -18,18 +26,26 @@ public class Player : MonoBehaviour
     private float horInput;
     private float vertInput;
     [SerializeField] private float rotationSpeed;
-
-    [Header("Jumping")]
-    [Range(1, 10)]
-    [SerializeField] private float jumpStrength;
-    [Range(0.1f, .9f)]
-    [SerializeField] private float jumpMovementDecay;
-
     private Vector3 startingPosition;
 
     // Dead State
     private bool isDead = false;
     private bool isAtGoal = false;
+    float currentScore = 0f;
+    float currentHealth = 100f;
+
+    [Header("Fighting Area Logic")]
+    float enemyHitDelay = 3.1f;
+    float curEnemyHitDelay = 0f;
+    private bool inFightingZone = false;
+    [SerializeField] GameObject previousTarget;
+    GameObject previousWave;
+    PlayerState currentPlayerState;
+
+    // Attack TimeFrame
+    private float timeLapseAfterAttack = 1;
+    private float curTimeLapse = 0;
+
     #endregion
 
     // Start is called before the first frame update
@@ -48,7 +64,30 @@ public class Player : MonoBehaviour
     void Update()
     {
         RunMovement();
-        RunJump();
+        if(currentPlayerState == PlayerState.HitEnemy)
+        {
+            if(curTimeLapse < timeLapseAfterAttack)  // Attempt time delay to view attack before default
+            {
+                curTimeLapse += Time.deltaTime;
+            }
+            else
+            {
+                GameManager.ratCamera.PlayDefaultTextures();
+                curTimeLapse = 0f;
+            } 
+        }
+    }
+
+    public void RunAttackLogic(GameObject target)
+    {
+        if (Input.GetKey(KeyCode.B))
+        {
+            GameManager.ratCamera.PlayHitEnemyTextures();
+            Destroy(target);
+            currentScore += 10;
+            GameManager.scoreManager.SetScore(currentScore);
+            curEnemyHitDelay = 0f;
+        }
     }
 
     void RunMovement()
@@ -56,12 +95,6 @@ public class Player : MonoBehaviour
         // Movement Logic
         horInput = Input.GetAxis("Horizontal");
         vertInput = Input.GetAxis("Vertical");
-
-        if (!IsGrounded())
-        {
-            horInput /= jumpMovementDecay;
-            vertInput /= jumpMovementDecay;
-        }
 
         // Fixing player rotation: https://youtu.be/v6Kh748AwJU?si=-k-4hQngw7fizIyU
         Vector3 myVel = new Vector3(horInput, 0, vertInput);
@@ -76,18 +109,6 @@ public class Player : MonoBehaviour
         {
             Quaternion lookRotation = Quaternion.LookRotation(myVel, Vector3.up);
             this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
-        }
-    }
-
-    void RunJump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!IsGrounded())
-            {
-                return;
-            }
-            rb.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
         }
     }
 
@@ -137,9 +158,55 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "KillFloor")
+        if(other.gameObject.tag == "CameraStop")
         {
-            SetDeadState(true);
+            if (previousTarget)
+            {
+                if (previousTarget == other.gameObject)
+                    return;
+            }
+
+            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
+            target.SetActive(true);
+            previousWave = other.gameObject.transform.GetChild(1).gameObject;
+            previousWave.SetActive(true);
+            previousTarget = target;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "CameraStop")
+        {
+            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
+            target.SetActive(false);
+            previousWave.SetActive(false);
+            inFightingZone = false;
+        }
+    }
+
+    // Enemy hitting logic!
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            Enemy component = collision.gameObject.GetComponent<Enemy>();
+            if (!component)
+            {
+                Debug.Log("Component can not be found!");
+                return;
+            }
+
+            GameManager.ratCamera.PlayHitByEnemyTextures();
+            if (curEnemyHitDelay <= 0)
+            {
+                currentHealth -= 10;
+                GameManager.healthBar.SetHealth(currentHealth);
+                curEnemyHitDelay = enemyHitDelay;
+            }
+
+
+            curEnemyHitDelay -= Time.deltaTime;        
         }
     }
 
@@ -168,5 +235,35 @@ public class Player : MonoBehaviour
     public Vector3 GetStartingPosition()
     {
         return startingPosition;
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public bool AtFightingZone()
+    {
+        return inFightingZone;
+    }
+
+    public void SetAtFightingZone(bool toggle)
+    {
+        inFightingZone = toggle;
+    }
+
+    public PlayerState GetPlayerState()
+    {
+        return currentPlayerState;
+    }
+
+    public void SetPlayerState(PlayerState state)
+    {
+        currentPlayerState = state;
+    }
+
+    public GameObject GetTargetZone()
+    {
+        return previousTarget;
     }
 }
