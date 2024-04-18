@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum PlayerState
+{
+    Default,
+    HitByEnemy,
+    HitEnemy
+};
+
 public class Player : MonoBehaviour
 {
     #region Variables
@@ -18,13 +26,11 @@ public class Player : MonoBehaviour
     private float horInput;
     private float vertInput;
     [SerializeField] private float rotationSpeed;
-
     private Vector3 startingPosition;
 
     // Dead State
     private bool isDead = false;
     private bool isAtGoal = false;
-
     float currentScore = 0f;
     float currentHealth = 100f;
 
@@ -33,6 +39,11 @@ public class Player : MonoBehaviour
     float curEnemyHitDelay = 0f;
     private bool inFightingZone = false;
     GameObject previousTarget;
+    PlayerState currentPlayerState;
+
+    // Attack TimeFrame
+    private float timeLapseAfterAttack = 1;
+    private float curTimeLapse = 0;
 
     #endregion
 
@@ -52,18 +63,32 @@ public class Player : MonoBehaviour
     void Update()
     {
         RunMovement();
+        if(currentPlayerState == PlayerState.HitEnemy)
+        {
+            if(curTimeLapse < timeLapseAfterAttack)  // Attempt time delay to view attack before default
+            {
+                curTimeLapse += Time.deltaTime;
+            }
+            else
+            {
+                GameManager.ratCamera.PlayDefaultTextures();
+                curTimeLapse = 0f;
+            } 
+        }
     }
 
     public void RunAttackLogic(GameObject target)
     {
         if (Input.GetKey(KeyCode.B))
         {
+            GameManager.ratCamera.PlayHitEnemyTextures();
             Destroy(target);
             currentScore += 10;
             GameManager.scoreManager.SetScore(currentScore);
             curEnemyHitDelay = 0f;
         }
     }
+
     void RunMovement()
     {
         // Movement Logic
@@ -169,12 +194,14 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            if(curEnemyHitDelay <= 0)
+            GameManager.ratCamera.PlayHitByEnemyTextures();
+            if (curEnemyHitDelay <= 0)
             {
                 currentHealth -= 10;
                 GameManager.healthBar.SetHealth(currentHealth);
                 curEnemyHitDelay = enemyHitDelay;
             }
+
 
             curEnemyHitDelay -= Time.deltaTime;        
         }
@@ -215,5 +242,15 @@ public class Player : MonoBehaviour
     public bool AtFightingZone()
     {
         return inFightingZone;
+    }
+
+    public PlayerState GetPlayerState()
+    {
+        return currentPlayerState;
+    }
+
+    public void SetPlayerState(PlayerState state)
+    {
+        currentPlayerState = state;
     }
 }

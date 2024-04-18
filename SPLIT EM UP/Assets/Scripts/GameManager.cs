@@ -51,6 +51,21 @@ public class GameManager : MonoBehaviour
 
     private HealthBar m_healthBar;
 
+    public static RatCameraManager ratCamera
+    {
+        get
+        {
+            if (gameManager.m_ratCamera == null)
+            {
+                gameManager.m_ratCamera = GameObject.FindGameObjectWithTag("RatCamera").GetComponent<RatCameraManager>();
+            }
+
+            return gameManager.m_ratCamera;
+        }
+    }
+
+    private RatCameraManager m_ratCamera;
+
 
     // Start is called before the first frame update
     void Awake()

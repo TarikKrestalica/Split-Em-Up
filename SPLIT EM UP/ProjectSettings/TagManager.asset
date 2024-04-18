@@ -9,6 +9,8 @@ TagManager:
   - HealthBar
   - CameraStop
   - SpawnLocations
+  - BossZone
+  - RatCamera
   layers:
   - Default
   - TransparentFX
