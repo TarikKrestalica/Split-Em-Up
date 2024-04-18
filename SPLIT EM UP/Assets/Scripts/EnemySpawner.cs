@@ -30,8 +30,18 @@ public class EnemySpawner : MonoBehaviour
             GameObject spawnPoint = ChooseRandomSpawnPoint();
             Instantiate(enemy, spawnPoint.transform.position, Quaternion.identity);
             ++currentEnemiesSpawned;
-            Debug.Log("Created");
+
+            // Stop camera when fighting enemies
             yield return wait;
+            if (currentEnemiesSpawned == numOfEnemies)  // Won their fighting zone, move to next stages
+            {
+                GameManager.player.SetAtFightingZone(false);
+                GameManager.player.GetTargetZone().SetActive(false);
+            }
+            else if(currentEnemiesSpawned == 1)
+            {
+                GameManager.player.SetAtFightingZone(true);
+            }  
         }
     }
 

@@ -38,7 +38,8 @@ public class Player : MonoBehaviour
     float enemyHitDelay = 3.1f;
     float curEnemyHitDelay = 0f;
     private bool inFightingZone = false;
-    GameObject previousTarget;
+    [SerializeField] GameObject previousTarget;
+    GameObject previousWave;
     PlayerState currentPlayerState;
 
     // Attack TimeFrame
@@ -167,7 +168,8 @@ public class Player : MonoBehaviour
 
             GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             target.SetActive(true);
-            inFightingZone = true;
+            previousWave = other.gameObject.transform.GetChild(1).gameObject;
+            previousWave.SetActive(true);
             previousTarget = target;
         }
     }
@@ -178,6 +180,7 @@ public class Player : MonoBehaviour
         {
             GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             target.SetActive(false);
+            previousWave.SetActive(false);
             inFightingZone = false;
         }
     }
@@ -244,6 +247,11 @@ public class Player : MonoBehaviour
         return inFightingZone;
     }
 
+    public void SetAtFightingZone(bool toggle)
+    {
+        inFightingZone = toggle;
+    }
+
     public PlayerState GetPlayerState()
     {
         return currentPlayerState;
@@ -252,5 +260,10 @@ public class Player : MonoBehaviour
     public void SetPlayerState(PlayerState state)
     {
         currentPlayerState = state;
+    }
+
+    public GameObject GetTargetZone()
+    {
+        return previousTarget;
     }
 }
