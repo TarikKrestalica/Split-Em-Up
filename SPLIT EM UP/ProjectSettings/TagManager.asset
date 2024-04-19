@@ -11,6 +11,7 @@ TagManager:
   - SpawnLocations
   - BossZone
   - RatCamera
+  - DialogueManager
   layers:
   - Default
   - TransparentFX

@@ -26,11 +26,10 @@ public class Player : MonoBehaviour
     private float horInput;
     private float vertInput;
     [SerializeField] private float rotationSpeed;
-    private Vector3 startingPosition;
+    private bool locked = false;
+    private int directional = 1;
 
     // Dead State
-    private bool isDead = false;
-    private bool isAtGoal = false;
     float currentScore = 0f;
     float currentHealth = 100f;
 
@@ -45,14 +44,12 @@ public class Player : MonoBehaviour
     // Attack TimeFrame
     private float timeLapseAfterAttack = 1;
     private float curTimeLapse = 0;
-
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
         GetComponents();
-        startingPosition = this.transform.position;
     }
 
     void GetComponents()
@@ -63,6 +60,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CheckForLockedMovement())
+        {
+            return;
+        }
+
         RunMovement();
         if(currentPlayerState == PlayerState.HitEnemy)
         {
@@ -76,6 +78,16 @@ public class Player : MonoBehaviour
                 curTimeLapse = 0f;
             } 
         }
+    }
+
+    bool CheckForLockedMovement()
+    {
+        if (locked)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public void RunAttackLogic(GameObject target)
@@ -93,8 +105,8 @@ public class Player : MonoBehaviour
     void RunMovement()
     {
         // Movement Logic
-        horInput = Input.GetAxis("Horizontal");
-        vertInput = Input.GetAxis("Vertical");
+        horInput = directional * Input.GetAxis("Horizontal");
+        vertInput = directional * Input.GetAxis("Vertical");
 
         // Fixing player rotation: https://youtu.be/v6Kh748AwJU?si=-k-4hQngw7fizIyU
         Vector3 myVel = new Vector3(horInput, 0, vertInput);
@@ -210,33 +222,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Death Logic
-    public bool IsDead()
-    {
-        return isDead;
-    }
-
-    public void SetDeadState(bool toggle)
-    {
-        isDead = toggle;
-    }
-
-    // Goal Logic
-    public bool IsAtGoal()
-    {
-        return isAtGoal;
-    }
-
-    public void SetAtGoalState(bool toggle)
-    {
-        isAtGoal = toggle;
-    }
-
-    public Vector3 GetStartingPosition()
-    {
-        return startingPosition;
-    }
-
     public float GetCurrentHealth()
     {
         return currentHealth;
@@ -265,5 +250,20 @@ public class Player : MonoBehaviour
     public GameObject GetTargetZone()
     {
         return previousTarget;
+    }
+
+    public void SetMovementLocked(bool toggle)
+    {
+        locked = toggle;
+    }
+
+    public bool IsMovementLocked()
+    {
+        return locked;
+    }
+
+    public void SetDirectional(int value)
+    {
+        directional = value;
     }
 }

@@ -26,6 +26,8 @@ public class DialogueManager : MonoBehaviour
 
     private float textSpeed = 0.05f;
 
+    private bool dialoguePlaying;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -39,6 +41,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
+        dialoguePlaying = true;
         currentLine = 0;
         isStoryFinished = false;
         sentences.Clear();  // Remove old story
@@ -130,8 +133,15 @@ public class DialogueManager : MonoBehaviour
         isStoryFinished = true;
         if (!FindObjectOfType<DialogueCollection>().TryToPlayNextDialogue())
         {
+            dialoguePlaying = false;
             curDialogueBox.box.SetActive(false);
-        }
+            GameManager.bossZone.StartBossFight();
+        } 
+    }
+
+    public bool IsDialoguePlaying()
+    {
+        return dialoguePlaying;
     }
 
 }

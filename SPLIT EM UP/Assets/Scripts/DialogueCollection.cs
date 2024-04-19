@@ -5,27 +5,20 @@ using UnityEngine;
 public class DialogueCollection : MonoBehaviour
 {
     [SerializeField] List<Dialogue> dialogues;
-    private int curDialogueIndex = 0;
-
-    private void Awake()
-    {
-        if(dialogues.Count < 0)
-        {
-            Debug.LogError("No dialogues to play!");
-            return;
-        }
-
-        GetComponent<DialogueTrigger>().dialogue = dialogues[curDialogueIndex];
-        FindObjectOfType<DialogueTrigger>().TriggerDialogue();
-    }
-
+    private int curDialogueIndex = -1;
 
     public bool TryToPlayNextDialogue()
     {
+        if (dialogues.Count < 0)
+        {
+            Debug.LogError("No dialogues to play!");
+            return false;
+        }
+
         ++curDialogueIndex;
         if(curDialogueIndex >= dialogues.Count)
         {
-            Debug.Log("Dialogue Session over");
+            GameManager.player.SetMovementLocked(false);
             return false;
         }
 

@@ -989,7 +989,7 @@ Transform:
   m_GameObject: {fileID: 345270969}
   serializedVersion: 2
   m_LocalRotation: {x: 0.101649374, y: -0, z: -0, w: 0.9948203}
-  m_LocalPosition: {x: 129.1, y: 12, z: -27.5}
+  m_LocalPosition: {x: -1.9, y: 12, z: -27.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1670,7 +1670,7 @@ GameObject:
   - component: {fileID: 683743872}
   m_Layer: 0
   m_Name: DialogueManager
-  m_TagString: Untagged
+  m_TagString: DialogueManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2981,6 +2981,8 @@ GameObject:
   - component: {fileID: 1011224981}
   - component: {fileID: 1011224980}
   - component: {fileID: 1011224983}
+  - component: {fileID: 1011224985}
+  - component: {fileID: 1011224984}
   m_Layer: 0
   m_Name: BossZone
   m_TagString: BossZone
@@ -3089,6 +3091,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barriers: {fileID: 614657458}
+  collection: {fileID: 1011224985}
+--- !u!114 &1011224984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011224978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b307150a3357c40e6ae0819280785696, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogue:
+    sentences: []
+--- !u!114 &1011224985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011224978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e6129673d7540d08181262f9ff12a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogues:
+  - sentences:
+    - 'Time for things to get a little weird....
+
+      Ha ha ha!!'
 --- !u!1 &1026574827
 GameObject:
   m_ObjectHideFlags: 0
@@ -3497,8 +3531,6 @@ GameObject:
   - component: {fileID: 1139751885}
   - component: {fileID: 1139751884}
   - component: {fileID: 1139751883}
-  - component: {fileID: 1139751886}
-  - component: {fileID: 1139751887}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3589,37 +3621,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1139751886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1139751881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1e6129673d7540d08181262f9ff12a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogues:
-  - sentences:
-    - 'Time for things to get a little weird....
-
-      Ha ha ha!!'
---- !u!114 &1139751887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1139751881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b307150a3357c40e6ae0819280785696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogue:
-    sentences: []
 --- !u!1 &1185691709
 GameObject:
   m_ObjectHideFlags: 0
@@ -6016,7 +6017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491966472045140355, guid: 488b80685de494491846bf7dc5e876ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 111.1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5491966472045140355, guid: 488b80685de494491846bf7dc5e876ab, type: 3}
       propertyPath: m_LocalPosition.y
