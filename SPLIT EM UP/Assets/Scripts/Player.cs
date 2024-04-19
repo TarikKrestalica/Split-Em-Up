@@ -158,7 +158,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "CameraStop")
+        if(other.gameObject.tag == "CameraStop" || other.gameObject.tag == "BossZone")
         {
             if (previousTarget)
             {
