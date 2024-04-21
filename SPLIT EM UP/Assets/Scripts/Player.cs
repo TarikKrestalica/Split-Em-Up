@@ -22,6 +22,9 @@ public class Player : MonoBehaviour
     [SerializeField] private RectTransform groundCheckTransform;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Movement Animations")]
+    [SerializeField] AnimationManager animationManager;
+
     [Header("Movement Constraints")]
     private float horInput;
     private float vertInput;
@@ -66,6 +69,7 @@ public class Player : MonoBehaviour
         }
 
         RunMovement();
+        RunAttackLogic(null);
         if(currentPlayerState == PlayerState.HitEnemy)
         {
             if(curTimeLapse < timeLapseAfterAttack)  // Attempt time delay to view attack before default
@@ -94,11 +98,14 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.B))
         {
-            GameManager.ratCamera.PlayHitEnemyTextures();
-            Destroy(target);
-            currentScore += 10;
-            GameManager.scoreManager.SetScore(currentScore);
-            curEnemyHitDelay = 0f;
+            if (target != null)
+            {
+                GameManager.ratCamera.PlayHitEnemyTextures();
+                Destroy(target);
+                currentScore += 10;
+                GameManager.scoreManager.SetScore(currentScore);
+                curEnemyHitDelay = 0f;
+            }     
         }
     }
 
@@ -168,7 +175,7 @@ public class Player : MonoBehaviour
         return Physics.CheckCapsule(groundCheckTransform.position, groundCheckTransform.position, 0.2f, groundMask);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "CameraStop" || other.gameObject.tag == "BossZone")
         {
@@ -182,7 +189,8 @@ public class Player : MonoBehaviour
             target.SetActive(true);
             previousWave = other.gameObject.transform.GetChild(1).gameObject;
             previousWave.SetActive(true);
-            previousTarget = target;
+            previousTarget = other.gameObject;
+
         }
     }
 
@@ -190,6 +198,10 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "CameraStop")
         {
+            if (!previousWave)
+            {
+                return;
+            }
             GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             target.SetActive(false);
             previousWave.SetActive(false);

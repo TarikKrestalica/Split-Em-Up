@@ -17,32 +17,36 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float respawnTime;
     private float curRespawnTime = 0f;
 
-    private void Start()
+    private void Update()
     {
-        StartCoroutine(StartRespawningLogic());
-    }
+        if(currentEnemiesSpawned >= numOfEnemies)
+        {
+            return;
+        }
 
-    IEnumerator StartRespawningLogic()
-    {
-        WaitForSeconds wait = new WaitForSeconds(respawnTime);
-        while (currentEnemiesSpawned < numOfEnemies)
+        if(curRespawnTime > 0f)
+        {
+            curRespawnTime -= Time.deltaTime;
+        }
+        else
         {
             GameObject spawnPoint = ChooseRandomSpawnPoint();
             Instantiate(enemy, spawnPoint.transform.position, Quaternion.identity);
             ++currentEnemiesSpawned;
 
-            // Stop camera when fighting enemies
-            yield return wait;
             if (currentEnemiesSpawned == numOfEnemies)  // Won their fighting zone, move to next stages
             {
                 GameManager.player.SetAtFightingZone(false);
                 GameManager.player.GetTargetZone().SetActive(false);
             }
-            else if(currentEnemiesSpawned == 1)
+            else if (currentEnemiesSpawned == 1)
             {
                 GameManager.player.SetAtFightingZone(true);
-            }  
+            }
+
+            curRespawnTime = respawnTime;
         }
+        
     }
 
     GameObject ChooseRandomSpawnPoint()
