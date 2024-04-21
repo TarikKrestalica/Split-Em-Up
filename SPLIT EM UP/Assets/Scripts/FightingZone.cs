@@ -11,8 +11,15 @@ public class FightingZone : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            GameManager.player.SetAtFightingZone(true);
             barriers.SetActive(true);
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+            barriers.SetActive(true);
     }
 
     public void SetBarriersActive(bool toggle)

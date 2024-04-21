@@ -10,11 +10,18 @@ public class EmptyManager : MonoBehaviour
     [Range(0, 100f)]
     [SerializeField] private float panBackSpeed;
 
+    private bool stopPanBack;
+
     // Update is called once per frame
     void Update()
     {
         // Is player not in the empty range?
         if (GameManager.player.transform.position.x <= xBound)
+        {
+            return;
+        }
+
+        if (stopPanBack)
         {
             return;
         }
@@ -29,5 +36,10 @@ public class EmptyManager : MonoBehaviour
         Vector3 target = Vector3.Lerp(this.transform.position, newPosition, panBackSpeed * Time.deltaTime);
         this.transform.position = target;
 
+    }
+
+    public void SetStopPanBack(bool toggle)
+    {
+        stopPanBack = toggle;
     }
 }

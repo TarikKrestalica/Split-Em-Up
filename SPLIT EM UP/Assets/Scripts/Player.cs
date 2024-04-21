@@ -41,8 +41,11 @@ public class Player : MonoBehaviour
     float curEnemyHitDelay = 0f;
     private bool inFightingZone = false;
     [SerializeField] GameObject previousTarget;
+    GameObject previousZonedArea;
     GameObject previousWave;
     PlayerState currentPlayerState;
+
+    private int enemiesDefeated = 0;
 
     // Attack TimeFrame
     private float timeLapseAfterAttack = 1;
@@ -101,6 +104,7 @@ public class Player : MonoBehaviour
             if (target != null)
             {
                 GameManager.ratCamera.PlayHitEnemyTextures();
+                AddEnemyDefeated();
                 Destroy(target);
                 currentScore += 10;
                 GameManager.scoreManager.SetScore(currentScore);
@@ -179,17 +183,13 @@ public class Player : MonoBehaviour
     {
         if(other.gameObject.tag == "CameraStop" || other.gameObject.tag == "BossZone")
         {
-            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
-            if (previousTarget)
-            {
-                if (previousTarget == target)
-                    return;
-            }
-
-            target.SetActive(true);
-            previousWave = other.gameObject.transform.GetChild(1).gameObject;
-            previousWave.SetActive(true);
+            GameObject target = other.gameObject;
             previousTarget = target;
+            GameObject zoned = target.transform.GetChild(0).gameObject;
+            zoned.SetActive(true);
+            previousZonedArea = zoned;
+            previousWave = target.transform.GetChild(1).gameObject;
+            previousWave.SetActive(true);
 
         }
     }
@@ -198,10 +198,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "CameraStop")
         {
-            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
-            target.SetActive(false);
             previousWave.SetActive(false);
-            inFightingZone = false;
         }
     }
 
@@ -257,7 +254,7 @@ public class Player : MonoBehaviour
 
     public GameObject GetTargetZone()
     {
-        return previousTarget;
+        return previousZonedArea;
     }
 
     public void SetMovementLocked(bool toggle)
@@ -273,5 +270,20 @@ public class Player : MonoBehaviour
     public void SetDirectional(int value)
     {
         directional = value;
+    }
+
+    public void AddEnemyDefeated()
+    {
+        enemiesDefeated += 1;
+    }
+
+    public void ResetEnemiesDefeated()
+    {
+        enemiesDefeated = 0;
+    }
+
+    public int GetEnemiesDefeated()
+    {
+        return enemiesDefeated;
     }
 }

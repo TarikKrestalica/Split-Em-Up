@@ -8,9 +8,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed;
 
     private bool nearPlayer = false;
+
+    [SerializeField] Animator animator;
+    [SerializeField] AnimationClip clip;
     // Update is called once per frame
     void Update()
     {
+        animator.Play(clip.name);
         this.transform.position = Vector3.MoveTowards(this.transform.position, GameManager.player.transform.position, speed * Time.deltaTime);
         Vector3 distanceApart = GameManager.player.transform.position - this.transform.position;
         if (distanceApart.magnitude < 5)

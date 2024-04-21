@@ -81,6 +81,21 @@ public class GameManager : MonoBehaviour
 
     private BossZone m_bossZone;
 
+    public static EmptyManager emptyManager
+    {
+        get
+        {
+            if (gameManager.m_emptyManager == null)
+            {
+                gameManager.m_emptyManager = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EmptyManager>();
+            }
+
+            return gameManager.m_emptyManager;
+        }
+    }
+
+    private EmptyManager m_emptyManager;
+
     // Start is called before the first frame update
     void Awake()
     {
