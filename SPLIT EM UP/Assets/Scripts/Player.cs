@@ -175,21 +175,21 @@ public class Player : MonoBehaviour
         return Physics.CheckCapsule(groundCheckTransform.position, groundCheckTransform.position, 0.2f, groundMask);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "CameraStop" || other.gameObject.tag == "BossZone")
         {
+            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             if (previousTarget)
             {
-                if (previousTarget == other.gameObject)
+                if (previousTarget == target)
                     return;
             }
 
-            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             target.SetActive(true);
             previousWave = other.gameObject.transform.GetChild(1).gameObject;
             previousWave.SetActive(true);
-            previousTarget = other.gameObject;
+            previousTarget = target;
 
         }
     }
@@ -198,10 +198,6 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "CameraStop")
         {
-            if (!previousWave)
-            {
-                return;
-            }
             GameObject target = other.gameObject.transform.GetChild(0).gameObject;
             target.SetActive(false);
             previousWave.SetActive(false);

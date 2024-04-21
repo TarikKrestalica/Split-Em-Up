@@ -54,4 +54,6 @@ public class EnemySpawner : MonoBehaviour
         int index = rnd.Next(0, spawnPoints.Count);
         return spawnPoints[index];
     }
+
+
 }

@@ -19,11 +19,6 @@ public class EmptyManager : MonoBehaviour
             return;
         }
 
-        if (GameManager.player.AtFightingZone())
-        {
-            return;
-        }
-
         MoveBackToPlayer();
     }
 
