@@ -23,11 +23,6 @@ public class BossZone : FightingZone
             collection.TryToPlayNextDialogue();
         }
 
-        if (other.gameObject.GetComponent<Camera>())
-        {
-            Vector3 newPosition = new Vector3(GameManager.player.transform.position.z, this.transform.position.y, this.transform.position.x);
-        }
-
     }
 
     public void ReverseMovementControls()
