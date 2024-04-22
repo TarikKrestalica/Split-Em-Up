@@ -9,14 +9,15 @@ public class BossZone : FightingZone
     [SerializeField] DialogueCollection collection;
     private bool hasReversedControls = false;
 
-
     public override void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
+            this.gameObject.transform.GetChild(1).gameObject.SetActive(true);
+            GameManager.player.SetAtFightingZone(true);
             SetBarriersActive(true);
-            collection.TryToPlayNextDialogue();
             GameManager.player.SetMovementLocked(true);
+            collection.TryToPlayNextDialogue();
         }
     }
 

@@ -101,6 +101,11 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.B))
         {
+            if (animationManager)
+            {
+                animationManager.PlayAnimation("Punch");
+            }
+  
             if (target != null)
             {
                 GameManager.ratCamera.PlayHitEnemyTextures();
@@ -132,6 +137,13 @@ public class Player : MonoBehaviour
         {
             Quaternion lookRotation = Quaternion.LookRotation(myVel, Vector3.up);
             this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+            if(animationManager)
+                animationManager.PlayAnimation("Walk");
+        }
+        else
+        {
+            if(animationManager)
+                animationManager.PlayAnimation("Idle");
         }
     }
 
@@ -181,24 +193,27 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "CameraStop" || other.gameObject.tag == "BossZone")
+        if(other.gameObject.tag == "CameraStop")
         {
             GameObject target = other.gameObject;
             previousTarget = target;
+            target.transform.GetChild(0).gameObject.SetActive(true);
             GameObject zoned = target.transform.GetChild(0).gameObject;
-            zoned.SetActive(true);
             previousZonedArea = zoned;
+            target.transform.GetChild(1).gameObject.SetActive(true);
             previousWave = target.transform.GetChild(1).gameObject;
-            previousWave.SetActive(true);
 
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.tag == "CameraStop")
+        if(collision.gameObject.tag == "Normal")
         {
             previousWave.SetActive(false);
+            previousWave = null;
+            previousZonedArea.SetActive(true);
+            previousZonedArea = null;
         }
     }
 
