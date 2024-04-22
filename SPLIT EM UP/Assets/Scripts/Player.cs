@@ -216,8 +216,6 @@ public class Player : MonoBehaviour
             target.transform.GetChild(0).gameObject.SetActive(true);
             GameObject zoned = target.transform.GetChild(0).gameObject;
             previousZonedArea = zoned;
-            target.transform.GetChild(1).gameObject.SetActive(true);
-            previousWave = target.transform.GetChild(1).gameObject;
 
         }
     }
