@@ -17,32 +17,46 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float respawnTime;
     private float curRespawnTime = 0f;
 
+    private int enemiesDefeated = 0;
+
     private void Start()
     {
-        StartCoroutine(StartRespawningLogic());
+        curRespawnTime = respawnTime;
     }
 
-    IEnumerator StartRespawningLogic()
+    private void Update()
     {
-        WaitForSeconds wait = new WaitForSeconds(respawnTime);
-        while (currentEnemiesSpawned < numOfEnemies)
+        if (GameManager.player.GetEnemiesDefeated() == numOfEnemies)
+        {
+            GameManager.player.SetAtFightingZone(false);
+            GameManager.player.ResetEnemiesDefeated();
+            GameManager.player.GetTargetZone().SetActive(false);
+            return;
+        }
+
+        if (currentEnemiesSpawned >= numOfEnemies)
+        {
+            return;
+        }
+
+        if(curRespawnTime > 0f)
+        {
+            curRespawnTime -= Time.deltaTime;
+        }
+        else
         {
             GameObject spawnPoint = ChooseRandomSpawnPoint();
             Instantiate(enemy, spawnPoint.transform.position, Quaternion.identity);
             ++currentEnemiesSpawned;
 
-            // Stop camera when fighting enemies
-            yield return wait;
-            if (currentEnemiesSpawned == numOfEnemies)  // Won their fighting zone, move to next stages
-            {
-                GameManager.player.SetAtFightingZone(false);
-                GameManager.player.GetTargetZone().SetActive(false);
-            }
-            else if(currentEnemiesSpawned == 1)
+            if (currentEnemiesSpawned == 1)
             {
                 GameManager.player.SetAtFightingZone(true);
-            }  
+            }
+
+            curRespawnTime = respawnTime;
         }
+        
     }
 
     GameObject ChooseRandomSpawnPoint()
@@ -50,4 +64,20 @@ public class EnemySpawner : MonoBehaviour
         int index = rnd.Next(0, spawnPoints.Count);
         return spawnPoints[index];
     }
+
+    public void AddEnemyDefeated()
+    {
+        enemiesDefeated += 1;
+    }
+
+    public int GetEnemiesDefeated()
+    {
+        return enemiesDefeated;
+    }
+
+    public int GetNumberOfEnemies()
+    {
+        return numOfEnemies;
+    }
+
 }

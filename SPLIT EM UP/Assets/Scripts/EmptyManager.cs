@@ -10,6 +10,8 @@ public class EmptyManager : MonoBehaviour
     [Range(0, 100f)]
     [SerializeField] private float panBackSpeed;
 
+    private bool stopPanBack;
+
     // Update is called once per frame
     void Update()
     {
@@ -19,7 +21,7 @@ public class EmptyManager : MonoBehaviour
             return;
         }
 
-        if (GameManager.player.AtFightingZone())
+        if (stopPanBack)
         {
             return;
         }
@@ -34,5 +36,10 @@ public class EmptyManager : MonoBehaviour
         Vector3 target = Vector3.Lerp(this.transform.position, newPosition, panBackSpeed * Time.deltaTime);
         this.transform.position = target;
 
+    }
+
+    public void SetStopPanBack(bool toggle)
+    {
+        stopPanBack = toggle;
     }
 }

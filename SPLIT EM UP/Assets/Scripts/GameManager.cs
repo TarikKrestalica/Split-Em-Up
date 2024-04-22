@@ -66,6 +66,35 @@ public class GameManager : MonoBehaviour
 
     private RatCameraManager m_ratCamera;
 
+    public static BossZone bossZone
+    {
+        get
+        {
+            if (gameManager.m_bossZone == null)
+            {
+                gameManager.m_bossZone = GameObject.FindGameObjectWithTag("BossZone").GetComponent<BossZone>();
+            }
+
+            return gameManager.m_bossZone;
+        }
+    }
+
+    private BossZone m_bossZone;
+
+    public static EmptyManager emptyManager
+    {
+        get
+        {
+            if (gameManager.m_emptyManager == null)
+            {
+                gameManager.m_emptyManager = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EmptyManager>();
+            }
+
+            return gameManager.m_emptyManager;
+        }
+    }
+
+    private EmptyManager m_emptyManager;
 
     // Start is called before the first frame update
     void Awake()

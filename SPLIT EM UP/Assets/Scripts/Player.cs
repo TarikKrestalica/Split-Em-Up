@@ -22,15 +22,17 @@ public class Player : MonoBehaviour
     [SerializeField] private RectTransform groundCheckTransform;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Movement Animations")]
+    [SerializeField] AnimationManager animationManager;
+
     [Header("Movement Constraints")]
     private float horInput;
     private float vertInput;
     [SerializeField] private float rotationSpeed;
-    private Vector3 startingPosition;
+    private bool locked = false;
+    private int directional = 1;
 
     // Dead State
-    private bool isDead = false;
-    private bool isAtGoal = false;
     float currentScore = 0f;
     float currentHealth = 100f;
 
@@ -39,20 +41,21 @@ public class Player : MonoBehaviour
     float curEnemyHitDelay = 0f;
     private bool inFightingZone = false;
     [SerializeField] GameObject previousTarget;
+    GameObject previousZonedArea;
     GameObject previousWave;
     PlayerState currentPlayerState;
+
+    private int enemiesDefeated = 0;
 
     // Attack TimeFrame
     private float timeLapseAfterAttack = 1;
     private float curTimeLapse = 0;
-
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
         GetComponents();
-        startingPosition = this.transform.position;
     }
 
     void GetComponents()
@@ -63,7 +66,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CheckForLockedMovement())
+        {
+            return;
+        }
+
         RunMovement();
+        RunAttackLogic(null);
         if(currentPlayerState == PlayerState.HitEnemy)
         {
             if(curTimeLapse < timeLapseAfterAttack)  // Attempt time delay to view attack before default
@@ -78,23 +87,42 @@ public class Player : MonoBehaviour
         }
     }
 
+    bool CheckForLockedMovement()
+    {
+        if (locked)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public void RunAttackLogic(GameObject target)
     {
         if (Input.GetKey(KeyCode.B))
         {
-            GameManager.ratCamera.PlayHitEnemyTextures();
-            Destroy(target);
-            currentScore += 10;
-            GameManager.scoreManager.SetScore(currentScore);
-            curEnemyHitDelay = 0f;
+            if (animationManager)
+            {
+                animationManager.PlayAnimation("Punch");
+            }
+  
+            if (target != null)
+            {
+                GameManager.ratCamera.PlayHitEnemyTextures();
+                AddEnemyDefeated();
+                Destroy(target);
+                currentScore += 10;
+                GameManager.scoreManager.SetScore(currentScore);
+                curEnemyHitDelay = 0f;
+            }     
         }
     }
 
     void RunMovement()
     {
         // Movement Logic
-        horInput = Input.GetAxis("Horizontal");
-        vertInput = Input.GetAxis("Vertical");
+        horInput = directional * Input.GetAxis("Horizontal");
+        vertInput = directional * Input.GetAxis("Vertical");
 
         // Fixing player rotation: https://youtu.be/v6Kh748AwJU?si=-k-4hQngw7fizIyU
         Vector3 myVel = new Vector3(horInput, 0, vertInput);
@@ -109,6 +137,13 @@ public class Player : MonoBehaviour
         {
             Quaternion lookRotation = Quaternion.LookRotation(myVel, Vector3.up);
             this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+            if(animationManager)
+                animationManager.PlayAnimation("Walk");
+        }
+        else
+        {
+            if(animationManager)
+                animationManager.PlayAnimation("Idle");
         }
     }
 
@@ -160,28 +195,25 @@ public class Player : MonoBehaviour
     {
         if(other.gameObject.tag == "CameraStop")
         {
-            if (previousTarget)
-            {
-                if (previousTarget == other.gameObject)
-                    return;
-            }
-
-            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
-            target.SetActive(true);
-            previousWave = other.gameObject.transform.GetChild(1).gameObject;
-            previousWave.SetActive(true);
+            GameObject target = other.gameObject;
             previousTarget = target;
+            target.transform.GetChild(0).gameObject.SetActive(true);
+            GameObject zoned = target.transform.GetChild(0).gameObject;
+            previousZonedArea = zoned;
+            target.transform.GetChild(1).gameObject.SetActive(true);
+            previousWave = target.transform.GetChild(1).gameObject;
+
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.tag == "CameraStop")
+        if(collision.gameObject.tag == "Normal")
         {
-            GameObject target = other.gameObject.transform.GetChild(0).gameObject;
-            target.SetActive(false);
             previousWave.SetActive(false);
-            inFightingZone = false;
+            previousWave = null;
+            previousZonedArea.SetActive(true);
+            previousZonedArea = null;
         }
     }
 
@@ -208,33 +240,6 @@ public class Player : MonoBehaviour
 
             curEnemyHitDelay -= Time.deltaTime;        
         }
-    }
-
-    // Death Logic
-    public bool IsDead()
-    {
-        return isDead;
-    }
-
-    public void SetDeadState(bool toggle)
-    {
-        isDead = toggle;
-    }
-
-    // Goal Logic
-    public bool IsAtGoal()
-    {
-        return isAtGoal;
-    }
-
-    public void SetAtGoalState(bool toggle)
-    {
-        isAtGoal = toggle;
-    }
-
-    public Vector3 GetStartingPosition()
-    {
-        return startingPosition;
     }
 
     public float GetCurrentHealth()
@@ -264,6 +269,36 @@ public class Player : MonoBehaviour
 
     public GameObject GetTargetZone()
     {
-        return previousTarget;
+        return previousZonedArea;
+    }
+
+    public void SetMovementLocked(bool toggle)
+    {
+        locked = toggle;
+    }
+
+    public bool IsMovementLocked()
+    {
+        return locked;
+    }
+
+    public void SetDirectional(int value)
+    {
+        directional = value;
+    }
+
+    public void AddEnemyDefeated()
+    {
+        enemiesDefeated += 1;
+    }
+
+    public void ResetEnemiesDefeated()
+    {
+        enemiesDefeated = 0;
+    }
+
+    public int GetEnemiesDefeated()
+    {
+        return enemiesDefeated;
     }
 }

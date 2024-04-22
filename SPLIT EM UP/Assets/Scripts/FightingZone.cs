@@ -7,10 +7,11 @@ public class FightingZone : MonoBehaviour
 {
     [SerializeField] GameObject barriers;
 
-    private void OnTriggerEnter(Collider other)
+    public virtual void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
+            GameManager.player.SetAtFightingZone(true);
             barriers.SetActive(true);
         }
     }
