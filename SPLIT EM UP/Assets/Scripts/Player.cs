@@ -157,8 +157,8 @@ public class Player : MonoBehaviour
     {
         if(other.gameObject.tag == "Boss Zone")
         {
-            horInput = directional * Input.GetAxis("Vertical");
-            vertInput = directional * Input.GetAxis("Horizontal");
+            horInput = directional * Input.GetAxis("Horizontal");
+            vertInput = directional * Input.GetAxis("Vertical");
         }
     }
 
