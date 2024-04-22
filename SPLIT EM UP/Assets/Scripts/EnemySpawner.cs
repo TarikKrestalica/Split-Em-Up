@@ -30,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
         {
             GameManager.player.SetAtFightingZone(false);
             GameManager.player.ResetEnemiesDefeated();
-            GameManager.player.GetTargetZone().SetActive(false);
+            this.transform.parent.parent.gameObject.SetActive(false);
             return;
         }
 
