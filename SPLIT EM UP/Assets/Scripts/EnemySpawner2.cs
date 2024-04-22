@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner1 : MonoBehaviour
+public class EnemySpawner2 : MonoBehaviour
 {
     [SerializeField] GameObject enemy;
     [SerializeField] private List<GameObject> spawnPoints;
     private System.Random rnd = new System.Random();
 
-    [Range(0, 10)]
+    [Range(0, 1)]
     [SerializeField] private int numOfEnemies;
     private int currentEnemiesSpawned = 0;
 
