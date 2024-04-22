@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 // Handling all boss battle events here!
 public class BossZone : FightingZone
@@ -19,6 +22,12 @@ public class BossZone : FightingZone
             GameManager.player.SetMovementLocked(true);
             collection.TryToPlayNextDialogue();
         }
+
+        if (other.gameObject.GetComponent<Camera>())
+        {
+            Vector3 newPosition = new Vector3(GameManager.player.transform.position.z, this.transform.position.y, this.transform.position.x);
+        }
+
     }
 
     public void ReverseMovementControls()

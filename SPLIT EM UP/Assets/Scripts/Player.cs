@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public enum PlayerState
@@ -145,7 +149,19 @@ public class Player : MonoBehaviour
             if(animationManager)
                 animationManager.PlayAnimation("Idle");
         }
+
+ 
     }
+
+    public void OnTriggerEnter(Collider2D other)
+    {
+        if(other.gameObject.tag == "Boss Zone")
+        {
+            horInput = directional * Input.GetAxis("Vertical");
+            vertInput = directional * Input.GetAxis("Horizontal");
+        }
+    }
+
 
     void CapVelocity()  // Give threshold for the speed!
     {

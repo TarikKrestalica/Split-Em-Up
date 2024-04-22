@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.9281553, g: 0.9883221, b: 1.0225087, a: 1}
+  m_IndirectSpecularColor: {r: 0.9279803, g: 0.98817366, b: 1.0224576, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6353,7 +6353,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 8
-  animationManager: {fileID: 349257217}
+  animationManager: {fileID: 0}
   rotationSpeed: 360
   previousTarget: {fileID: 0}
 --- !u!54 &349257215
@@ -6416,14 +6416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf95b3f2b93a4f95a5e73d9d10be6dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationClips:
-  - clip: {fileID: 7400000, guid: f7636c5efdf744458a3d6e8370f69dba, type: 2}
-    name: Walk
-  - clip: {fileID: 7400000, guid: b40b3609aaa10494c93173ebd41d8673, type: 2}
-    name: Punch
-  - clip: {fileID: 7400000, guid: 122612b7dfec94d32b4fdc1543d1fff6, type: 2}
-    name: Idle
-  animator: {fileID: 349257216}
+  animationClips: []
+  animator: {fileID: 0}
 --- !u!65 &349257218
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13893,7 +13887,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &683743871
 Transform:
   m_ObjectHideFlags: 0
@@ -13924,9 +13918,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLine: 0
   curDialogueBox:
-    box: {fileID: 1398874784}
-    text_box: {fileID: 114535018}
-  continueButton: {fileID: 1237085000}
+    box: {fileID: 0}
+    text_box: {fileID: 0}
+  continueButton: {fileID: 0}
 --- !u!1001 &684225182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21585,7 +21579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barriers: {fileID: 614657458}
-  collection: {fileID: 1011224985}
+  collection: {fileID: 0}
 --- !u!114 &1011224984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21612,11 +21606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e6129673d7540d08181262f9ff12a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogues:
-  - sentences:
-    - 'Time for things to get a little weird....
-
-      Ha ha ha!!'
+  dialogues: []
 --- !u!1001 &1019067672
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46168,7 +46158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491966472045140355, guid: 488b80685de494491846bf7dc5e876ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1
+      value: 114.8
       objectReference: {fileID: 0}
     - target: {fileID: 5491966472045140355, guid: 488b80685de494491846bf7dc5e876ab, type: 3}
       propertyPath: m_LocalPosition.y
