@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [System.Serializable]
@@ -70,6 +70,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(currentHealth <= 0)
+        {
+            SceneManager.LoadScene("Lose");
+            return;
+        }
         if (CheckForLockedMovement())
         {
             return;
@@ -118,7 +123,12 @@ public class Player : MonoBehaviour
                 currentScore += 10;
                 GameManager.scoreManager.SetScore(currentScore);
                 curEnemyHitDelay = 0f;
-            }     
+            }
+
+            if(target.tag == "FinalBoss")
+            {
+                GameManager.finalBoss.TakeDamage();
+            }
         }
     }
 
@@ -153,12 +163,22 @@ public class Player : MonoBehaviour
  
     }
 
-    public void OnTriggerEnter(Collider2D other)
+    public void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Boss Zone")
         {
             horInput = directional * Input.GetAxis("Horizontal");
             vertInput = directional * Input.GetAxis("Vertical");
+        }
+
+        if (other.gameObject.tag == "CameraStop")
+        {
+            GameObject target = other.gameObject;
+            previousTarget = target;
+            target.transform.GetChild(0).gameObject.SetActive(true);
+            GameObject zoned = target.transform.GetChild(0).gameObject;
+            previousZonedArea = zoned;
+
         }
     }
 
@@ -207,21 +227,6 @@ public class Player : MonoBehaviour
         return Physics.CheckCapsule(groundCheckTransform.position, groundCheckTransform.position, 0.2f, groundMask);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.tag == "CameraStop")
-        {
-            GameObject target = other.gameObject;
-            previousTarget = target;
-            target.transform.GetChild(0).gameObject.SetActive(true);
-            GameObject zoned = target.transform.GetChild(0).gameObject;
-            previousZonedArea = zoned;
-            target.transform.GetChild(1).gameObject.SetActive(true);
-            previousWave = target.transform.GetChild(1).gameObject;
-
-        }
-    }
-
     public void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Normal")
@@ -236,15 +241,8 @@ public class Player : MonoBehaviour
     // Enemy hitting logic!
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.tag == "Enemy")
+        if(collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "FinalBoss")
         {
-            Enemy component = collision.gameObject.GetComponent<Enemy>();
-            if (!component)
-            {
-                Debug.Log("Component can not be found!");
-                return;
-            }
-
             GameManager.ratCamera.PlayHitByEnemyTextures();
             if (curEnemyHitDelay <= 0)
             {

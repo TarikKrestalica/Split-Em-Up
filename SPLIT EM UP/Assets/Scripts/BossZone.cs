@@ -11,9 +11,27 @@ public class BossZone : FightingZone
 {
     [SerializeField] DialogueCollection collection;
     private bool hasReversedControls = false;
+    private GameObject finalBoss;
+    [SerializeField] GameObject boss;
+    [Range(0, 10)]
+    [SerializeField] private float bossSpeed;
+
+    private void Start()
+    {
+        finalBoss = boss;
+        finalBoss.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (!hasReversedControls)
+            return;
+
+    }
 
     public override void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Enter");
         if (other.gameObject.tag == "Player")
         {
             this.gameObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -34,6 +52,8 @@ public class BossZone : FightingZone
     public void StartBossFight()
     {
         ReverseMovementControls();
+        GameManager.player.SetMovementLocked(false);
+        finalBoss.SetActive(true);
         hasReversedControls = true;
     }
 }
