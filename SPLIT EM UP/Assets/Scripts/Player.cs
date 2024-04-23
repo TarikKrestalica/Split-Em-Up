@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [System.Serializable]
@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
     {
         if(currentHealth <= 0)
         {
-            Debug.Log("Move to game over screen!");
+            SceneManager.LoadScene("Lose");
             return;
         }
         if (CheckForLockedMovement())
