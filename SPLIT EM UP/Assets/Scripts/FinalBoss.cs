@@ -31,9 +31,9 @@ public class FinalBoss : Enemy
     // Update is called once per frame
     public override void Update()
     {
-        if (health <= 0)
+        if (health == 0)
         {
-            SceneManager.LoadScene("WinScreen");
+            SceneManager.LoadScene(2);
             return;
         }
 

@@ -256,6 +256,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnCollisionEnter(Collision2D other)
+    {
+        if (other.gameObject.tag == "Trophy")
+        {
+            SceneManager.LoadScene(2);
+        }
+    }
+
     public float GetCurrentHealth()
     {
         return currentHealth;
