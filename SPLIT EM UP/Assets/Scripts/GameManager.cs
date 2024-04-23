@@ -96,6 +96,21 @@ public class GameManager : MonoBehaviour
 
     private EmptyManager m_emptyManager;
 
+    public static FinalBoss finalBoss
+    {
+        get
+        {
+            if (gameManager.m_finalBoss == null)
+            {
+                gameManager.m_finalBoss = GameObject.FindGameObjectWithTag("FinalBoss").GetComponent<FinalBoss>();
+            }
+
+            return gameManager.m_finalBoss;
+        }
+    }
+
+    private FinalBoss m_finalBoss;
+
     // Start is called before the first frame update
     void Awake()
     {

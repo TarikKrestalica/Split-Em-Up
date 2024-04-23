@@ -13,6 +13,7 @@ TagManager:
   - RatCamera
   - DialogueManager
   - Normal
+  - FinalBoss
   layers:
   - Default
   - TransparentFX

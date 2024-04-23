@@ -5,14 +5,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [Range(0, 10f)]
-    [SerializeField] private float speed;
+    [SerializeField] protected float speed;
 
     private bool nearPlayer = false;
 
     [SerializeField] Animator animator;
     [SerializeField] AnimationClip clip;
-    // Update is called once per frame
-    void Update()
+
+    public virtual void Update()
     {
         animator.Play(clip.name);
         this.transform.position = Vector3.MoveTowards(this.transform.position, GameManager.player.transform.position, speed * Time.deltaTime);
